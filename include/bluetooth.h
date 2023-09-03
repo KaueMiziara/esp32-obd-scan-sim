@@ -1,3 +1,3 @@
-#define BT_TAG "BLUETOOTH_INIT"
+#pragma once
 
 void initialize_bluetooth(void);

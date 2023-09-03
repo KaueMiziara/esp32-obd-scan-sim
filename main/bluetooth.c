@@ -8,6 +8,8 @@
 #include <nvs.h>
 #include <nvs_flash.h>
 
+#define BT_TAG "BLUETOOTH_INIT"
+
 void initialize_bluetooth(void)
 {
   esp_err_t ret = nvs_flash_init();
