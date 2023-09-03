@@ -1,7 +1,7 @@
 {
     "version":            "1",
     "project_name":       "esp32-obd-scan-sim",
-    "project_version":    "493404a-dirty",
+    "project_version":    "5073395-dirty",
     "project_path":       "/home/kaue/++/Embedded/esp32-obd-scan-sim/esp32-obd-scan-sim",
     "idf_path":           "/home/kaue/++/Embedded/esp-idf/esp-idf",
     "build_dir":          "/home/kaue/++/Embedded/esp32-obd-scan-sim/esp32-obd-scan-sim",
@@ -805,8 +805,8 @@
             "managed_reqs": [],
             "managed_priv_reqs": [],
             "file": "/home/kaue/++/Embedded/esp32-obd-scan-sim/esp32-obd-scan-sim/esp-idf/main/libmain.a",
-            "sources": [ "/home/kaue/++/Embedded/esp32-obd-scan-sim/esp32-obd-scan-sim/main/esp32-obd-scan-sim.c" ],
-            "include_dirs": [ "." ]
+            "sources": [ "/home/kaue/++/Embedded/esp32-obd-scan-sim/esp32-obd-scan-sim/main/esp32-obd-scan-sim.c", "/home/kaue/++/Embedded/esp32-obd-scan-sim/esp32-obd-scan-sim/main/bluetooth.c" ],
+            "include_dirs": [ ".", "../include" ]
         },
         "mbedtls": {
             "alias": "idf::mbedtls",
