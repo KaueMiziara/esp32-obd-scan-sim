@@ -13,7 +13,33 @@
 #include <nvs.h>
 #include <nvs_flash.h>
 
+#include "../include/leds.h"
+
 #define BT_TAG "BLUETOOTH_INIT"
+
+void spp_server_task(void* param)
+{
+  esp_err_t ret;
+
+  esp_spp_cb_param_t spp_param;
+  esp_spp_register_callback(spp_server_callback);
+
+  ret = esp_spp_start_srv(ESP_SPP_SEC_NONE, ESP_SPP_ROLE_SLAVE, 0, "SPP_SERVER");
+  if (ret != ESP_OK)
+  {
+    ESP_LOGE(BT_TAG, "SPP server start failed, error code %s", esp_err_to_name(ret));
+    vTaskDelete(NULL);
+  }
+  
+  while (true)
+  {
+    if (esp_spp_cb_dequeue(&spp_param, 0) == ESP_OK)
+    {
+      
+    }
+    vTaskDelay(1000/ portTICK_PERIOD_MS);
+  }
+}
 
 void initialize_bluetooth(void)
 {
@@ -40,12 +66,6 @@ void initialize_bluetooth(void)
     ESP_LOGE(BT_TAG, "Bluetooth controller enable failed, error code %s", esp_err_to_name(ret));
     return;
   }
-}
-
-void spp_server_task(void* param)
-{
-  while (true)
-    vTaskDelay(1000/ portTICK_PERIOD_MS);
 }
 
 void spp_server_callback(esp_spp_cb_event_t event, esp_spp_cb_param_t* param)
