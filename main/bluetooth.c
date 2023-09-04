@@ -13,8 +13,6 @@
 #include <nvs.h>
 #include <nvs_flash.h>
 
-#include "../include/leds.h"
-
 #define BT_TAG "BLUETOOTH_INIT"
 
 void spp_server_task(void* param)
@@ -33,10 +31,6 @@ void spp_server_task(void* param)
   
   while (true)
   {
-    if (esp_spp_cb_dequeue(&spp_param, 0) == ESP_OK)
-    {
-      
-    }
     vTaskDelay(1000/ portTICK_PERIOD_MS);
   }
 }
