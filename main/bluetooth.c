@@ -1,9 +1,14 @@
 #include "../include/bluetooth.h"
 
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
 #include <esp_bt.h>
+#include <esp_bt_device.h>
 #include <esp_bt_main.h>
 #include <esp_err.h>
+#include <esp_gap_bt_api.h>
 #include <esp_log.h>
+#include <esp_spp_api.h>
 #include <esp_system.h>
 #include <nvs.h>
 #include <nvs_flash.h>
@@ -34,5 +39,54 @@ void initialize_bluetooth(void)
   {
     ESP_LOGE(BT_TAG, "Bluetooth controller enable failed, error code %s", esp_err_to_name(ret));
     return;
+  }
+}
+
+void spp_server_task(void* param)
+{
+  while (true)
+    vTaskDelay(1000/ portTICK_PERIOD_MS);
+}
+
+void spp_server_callback(esp_spp_cb_event_t event, esp_spp_cb_param_t* param)
+{
+  switch (event)
+  {
+    case ESP_SPP_INIT_EVT:
+      ESP_LOGI(BT_TAG, "SPP server initialized");
+      esp_bt_dev_set_device_name("ESP32-SPP");
+      esp_bt_gap_set_scan_mode(ESP_BT_CONNECTABLE, ESP_BT_GENERAL_DISCOVERABLE);
+    break;
+
+    case ESP_SPP_OPEN_EVT:
+      ESP_LOGI(BT_TAG, "Client connected");
+      // TODO: turn on LED when connected
+    break;
+
+    case ESP_SPP_CLOSE_EVT:
+      ESP_LOGI(BT_TAG, "Client disconnected");
+      // TODO: turn off LED when disconencted
+    break;
+
+    case ESP_SPP_DATA_IND_EVT:
+      ESP_LOGI(BT_TAG, "Received data");
+      // TODO: handle received data
+      // PLACEHOLDER (echo):
+      esp_spp_write(param->srv_open.handle, param->data_ind.len, param->data_ind.data);
+    break;
+
+    case ESP_SPP_CONG_EVT:
+      if (param->cong.cong == 0)
+      {
+        ESP_LOGI(BT_TAG, "SPP flow control released, ready to send more data");
+      }
+      else
+      {
+        ESP_LOGI(BT_TAG, "SPP flow control enabled");
+      }
+    break;
+    
+    default:
+      break;
   }
 }
