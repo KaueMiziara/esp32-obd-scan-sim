@@ -17,7 +17,7 @@ pub fn init_obd_service(server: &mut BLEServer) {
     let obd_service = server.create_service(OBD_SERVICE_UUID);
     info!("Initialize OBD service");
 
-    let _command_characteristic = obd_service.lock().create_characteristic(
+    let command_characteristic = obd_service.lock().create_characteristic(
         OBD_COMMAND_CHARACTERISTIC_UUID,
         NimbleProperties::READ | NimbleProperties::WRITE,
     );
@@ -25,4 +25,21 @@ pub fn init_obd_service(server: &mut BLEServer) {
     let _response_characteristic = obd_service
         .lock()
         .create_characteristic(OBD_RESPONSE_CHARACTERISTIC_UUID, NimbleProperties::READ);
+
+    command_characteristic.lock().on_write(move |args| {
+        let data = args.recv_data;
+
+        const MODE_01: u8 = 0x01;
+        if data.first() == Some(&MODE_01) {
+            let mut response = vec![41];
+
+            if let Some(pid) = data.get(1) {
+                response.push(*pid);
+
+                response.push(0xff);
+            }
+
+            info!("Data: {:?}", response);
+        }
+    });
 }
