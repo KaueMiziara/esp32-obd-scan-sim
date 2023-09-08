@@ -14,7 +14,7 @@ fn main() {
 
     let server = ble_device.get_server();
     server.on_connect(|server, desc| {
-        ::log::info!("Client conencted");
+        ::log::info!("Client connected to BLE server");
 
         let params = (desc.conn_handle, 24, 48, 0, 60);
         match server.update_conn_params(params.0, params.1, params.2, params.3, params.4) {
@@ -23,7 +23,7 @@ fn main() {
         }
 
         match ble_device.get_advertising().start() {
-            Ok(_) => info!("Start advertising"),
+            Ok(_) => info!("Advertising started"),
             Err(err) => warn!("Failed to start advertising\nError: {:?}", err),
         }
     });
@@ -36,7 +36,7 @@ fn main() {
         .add_service_uuid(SERVICE_UUID);
 
     match ble_advertising.start() {
-        Ok(_) => info!("Start advertising"),
+        Ok(_) => info!("Advertising started"),
         Err(err) => warn!("Failed to start advertising\nError: {:?}", err),
     }
 
