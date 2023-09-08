@@ -14,9 +14,9 @@ fn main() {
 
     let ble_device = BLEDevice::take();
 
-    let mut server = ble_device.get_server();
+    let server = ble_device.get_server();
 
-    obd_service::init_obd_service(&mut server);
+    obd_service::init_obd_service(server);
 
     server.on_connect(|server, desc| {
         ::log::info!("Client connected to BLE server");
