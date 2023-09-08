@@ -2,6 +2,8 @@ use esp32_nimble::{utilities::BleUuid, BLEDevice};
 use esp_idf_sys as _;
 use log::{info, warn};
 
+mod obd_service;
+
 const SERVICE_UUID: BleUuid = BleUuid::Uuid128([
     0x2c, 0x05, 0xad, 0xa8, 0x69, 0x58, 0x4d, 0x58, 0x84, 0x51, 0xf5, 0x8a, 0x11, 0x06, 0x87, 0x9e,
 ]);
@@ -12,7 +14,10 @@ fn main() {
 
     let ble_device = BLEDevice::take();
 
-    let server = ble_device.get_server();
+    let mut server = ble_device.get_server();
+
+    obd_service::init_obd_service(&mut server);
+
     server.on_connect(|server, desc| {
         ::log::info!("Client connected to BLE server");
 
