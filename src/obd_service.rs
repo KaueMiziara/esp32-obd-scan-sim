@@ -1,5 +1,6 @@
 use esp32_nimble::{utilities::BleUuid, BLEServer, NimbleProperties};
 use log::info;
+use rand::Rng;
 
 const OBD_SERVICE_UUID: BleUuid = BleUuid::Uuid128([
     0x2c, 0x05, 0xad, 0xa8, 0x69, 0x58, 0x4d, 0x58, 0x84, 0x51, 0xf5, 0x8a, 0x11, 0x06, 0x88, 0x00,
@@ -30,12 +31,10 @@ pub fn init_obd_service(server: &mut BLEServer) {
 
         const MODE_01: u8 = 0x01;
         if data.first() == Some(&MODE_01) {
-            let mut response = vec![0x41];
+            let mut response = Vec::new();
 
             if let Some(pid) = data.get(1) {
-                response.push(*pid);
-
-                response.push(0xff);
+                response = generate_response(*pid, 4);
             }
 
             info!("Data: {:?}", response);
@@ -43,4 +42,19 @@ pub fn init_obd_service(server: &mut BLEServer) {
             response_characteristic.lock().notify();
         }
     });
+}
+
+fn generate_response(pid: u8, num_bytes: u8) -> Vec<u8> {
+    let mut response = vec![0x41, pid];
+    append_random_data(&mut response, num_bytes);
+
+    response
+}
+
+fn append_random_data(response: &mut Vec<u8>, num_bytes: u8) {
+    let mut rng = rand::thread_rng();
+    for _ in 0..num_bytes {
+        let random_byte: u8 = rng.gen();
+        response.push(random_byte);
+    }
 }
