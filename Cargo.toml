@@ -5,6 +5,7 @@ authors = ["Kaue Miziara <kauemiziara@gmail.com>"]
 edition = "2021"
 resolver = "2"
 rust-version = "1.66"
+license = "GPL-3.0-only"
 publish = false
 
 [profile.release]
@@ -17,7 +18,6 @@ opt-level = "z"
 [features]
 
 default = ["std", "hal", "esp-idf-sys/native"]
-
 
 pio = ["esp-idf-sys/pio"]
 all = ["std", "nightly", "experimental", "embassy"]
